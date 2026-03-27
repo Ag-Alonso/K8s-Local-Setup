@@ -1,0 +1,156 @@
+# Frontend ConfigMap (custom NGINX config)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: guestbook
+  labels:
+    app: frontend
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: guestbook
+data:
+  default.conf: |
+    server {
+      listen 80;
+      server_name _;
+
+      location / {
+        root /usr/share/nginx/html;
+        index index.html;
+      }
+
+      location /api/ {
+        proxy_pass http://backend.guestbook.svc.cluster.local/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+      }
+
+      location /healthz {
+        return 200 'OK';
+        add_header Content-Type text/plain;
+      }
+    }
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Guestbook - K8s Local Setup</title>
+      <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        h1 { color: #326ce5; }
+        .info { background: #f0f9ff; border: 1px solid #326ce5; border-radius: 8px; padding: 16px; margin: 16px 0; }
+        code { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
+      </style>
+    </head>
+    <body>
+      <h1>Guestbook</h1>
+      <div class="info">
+        <p>Welcome to the Guestbook application!</p>
+        <p>This is the <strong>capstone exercise</strong> for the K8s-Local-Setup guide.</p>
+        <p>Components running:</p>
+        <ul>
+          <li>Frontend (this page) — NGINX</li>
+          <li>Backend API — <code>/api/</code></li>
+          <li>Redis — Data persistence</li>
+        </ul>
+      </div>
+      <p>Served by pod: <code>HOSTNAME_PLACEHOLDER</code></p>
+    </body>
+    </html>
+---
+# Frontend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: guestbook
+  labels:
+    app: frontend
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: guestbook
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: frontend
+        app.kubernetes.io/name: frontend
+        app.kubernetes.io/component: web
+        app.kubernetes.io/part-of: guestbook
+    spec:
+      containers:
+        - name: frontend
+          image: nginx:1.27
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
+            - name: html
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            failureThreshold: 10
+            periodSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+      volumes:
+        - name: config
+          configMap:
+            name: frontend-config
+            items:
+              - key: default.conf
+                path: default.conf
+        - name: html
+          configMap:
+            name: frontend-config
+            items:
+              - key: index.html
+                path: index.html
+---
+# Frontend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: guestbook
+  labels:
+    app: frontend
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: guestbook
+spec:
+  selector:
+    app: frontend
+  ports:
+    - port: 80
+      targetPort: 80

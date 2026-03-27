@@ -1,0 +1,221 @@
+# Request Flow in Kubernetes
+# Render: d2 --layout tala --theme 0 --dark-theme 200 request-flow.d2 request-flow.svg
+
+direction: right
+
+title: Request Flow in Kubernetes {
+  near: top-center
+  style: {
+    font-size: 28
+    bold: true
+    font-color: "#1e293b"
+  }
+}
+
+# ── Client ──
+
+client: Client\n(browser / curl) {
+  shape: person
+  style: {
+    fill: "#64748b"
+    stroke: "#334155"
+    font-color: "#ffffff"
+    shadow: true
+  }
+}
+
+# ── DNS Resolution ──
+
+dns: CoreDNS {
+  style: {
+    fill: "#8b5cf6"
+    stroke: "#6d28d9"
+    font-color: "#ffffff"
+    border-radius: 8
+    shadow: true
+  }
+}
+
+dns-note: Resolves:\nmy-svc.my-ns.svc.cluster.local\n-> ClusterIP 10.96.0.10 {
+  style: {
+    fill: "#f5f3ff"
+    stroke: "#8b5cf6"
+    font-color: "#5b21b6"
+    border-radius: 8
+    font-size: 12
+  }
+}
+
+dns -> dns-note {
+  style: {
+    stroke: "#8b5cf6"
+    stroke-dash: 3
+  }
+}
+
+# ── Ingress ──
+
+ingress: Ingress Controller\n(NGINX) {
+  style: {
+    fill: "#8b5cf6"
+    stroke: "#6d28d9"
+    font-color: "#ffffff"
+    border-radius: 8
+    shadow: true
+    bold: true
+  }
+}
+
+ingress-note: Matches:\nHost: app.example.com\nPath: /api/* {
+  style: {
+    fill: "#f5f3ff"
+    stroke: "#8b5cf6"
+    font-color: "#5b21b6"
+    border-radius: 8
+    font-size: 12
+  }
+}
+
+ingress -> ingress-note {
+  style: {
+    stroke: "#8b5cf6"
+    stroke-dash: 3
+  }
+}
+
+# ── Service ──
+
+service: Service\n(ClusterIP)\nmy-svc:80 {
+  style: {
+    fill: "#10b981"
+    stroke: "#059669"
+    font-color: "#ffffff"
+    border-radius: 8
+    shadow: true
+    bold: true
+  }
+}
+
+label-match: Label Selector:\napp=my-app {
+  style: {
+    fill: "#d1fae5"
+    stroke: "#10b981"
+    font-color: "#065f46"
+    border-radius: 8
+    font-size: 12
+    bold: true
+  }
+}
+
+service -> label-match {
+  style: {
+    stroke: "#10b981"
+    stroke-dash: 3
+  }
+}
+
+# ── kube-proxy ──
+
+kube-proxy: kube-proxy\n(iptables rules) {
+  style: {
+    fill: "#4a90d9"
+    stroke: "#326ce5"
+    font-color: "#ffffff"
+    border-radius: 6
+  }
+}
+
+# ── Pods ──
+
+pods: Pod Pool (label: app=my-app) {
+  style: {
+    fill: "#fff7ed"
+    stroke: "#f97316"
+    border-radius: 12
+  }
+
+  pod-1: Pod 1 {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+
+    container: Container\n:8080 {
+      style: {
+        fill: "#0db7ed"
+        stroke: "#0991c4"
+        font-color: "#ffffff"
+        border-radius: 4
+      }
+    }
+  }
+
+  pod-2: Pod 2 {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+
+    container: Container\n:8080 {
+      style: {
+        fill: "#0db7ed"
+        stroke: "#0991c4"
+        font-color: "#ffffff"
+        border-radius: 4
+      }
+    }
+  }
+}
+
+# ── Request Flow Arrows ──
+
+client -> ingress: "1. HTTP request\napp.example.com/api/data" {
+  style: {
+    stroke: "#326ce5"
+    stroke-width: 3
+    bold: true
+  }
+}
+
+client -> dns: "0. DNS lookup" {
+  style: {
+    stroke: "#8b5cf6"
+    stroke-width: 2
+    stroke-dash: 3
+  }
+}
+
+ingress -> service: "2. Route by\nhost + path" {
+  style: {
+    stroke: "#326ce5"
+    stroke-width: 3
+  }
+}
+
+service -> kube-proxy: "3. ClusterIP\nresolved" {
+  style: {
+    stroke: "#326ce5"
+    stroke-width: 2
+  }
+}
+
+kube-proxy -> pods.pod-1: "4. Forward to\nselected pod" {
+  style: {
+    stroke: "#10b981"
+    stroke-width: 3
+  }
+}
+
+kube-proxy -> pods.pod-2: "4. (or here)" {
+  style: {
+    stroke: "#10b981"
+    stroke-width: 2
+    stroke-dash: 3
+  }
+}

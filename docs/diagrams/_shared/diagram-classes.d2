@@ -1,0 +1,320 @@
+# K8s-Local-Setup — Shared D2 Classes
+# Usage: Import with `...@docs/diagrams/_shared/diagram-classes.d2`
+
+classes: {
+  # ── Control Plane Components ──
+  control-plane: {
+    style: {
+      fill: "#326ce5"
+      stroke: "#1a4baa"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+    }
+  }
+
+  api-server: {
+    style: {
+      fill: "#326ce5"
+      stroke: "#1a4baa"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+      bold: true
+    }
+  }
+
+  etcd: {
+    style: {
+      fill: "#419eda"
+      stroke: "#2b7ab5"
+      font-color: "#ffffff"
+      border-radius: 12
+      shadow: true
+    }
+  }
+
+  # ── Worker Node Components ──
+  node: {
+    style: {
+      fill: "#e8f0fe"
+      stroke: "#326ce5"
+      border-radius: 8
+      shadow: true
+    }
+  }
+
+  kubelet: {
+    style: {
+      fill: "#4a90d9"
+      stroke: "#326ce5"
+      font-color: "#ffffff"
+      border-radius: 6
+    }
+  }
+
+  # ── Workloads ──
+  pod: {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  container: {
+    style: {
+      fill: "#0db7ed"
+      stroke: "#0991c4"
+      font-color: "#ffffff"
+      border-radius: 4
+    }
+  }
+
+  deployment: {
+    style: {
+      fill: "#326ce5"
+      stroke: "#1a4baa"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+    }
+  }
+
+  replicaset: {
+    style: {
+      fill: "#6b9ded"
+      stroke: "#326ce5"
+      font-color: "#ffffff"
+      border-radius: 8
+    }
+  }
+
+  # ── Networking ──
+  service: {
+    style: {
+      fill: "#10b981"
+      stroke: "#059669"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+    }
+  }
+
+  ingress: {
+    style: {
+      fill: "#8b5cf6"
+      stroke: "#6d28d9"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+    }
+  }
+
+  # ── Storage ──
+  volume: {
+    style: {
+      fill: "#f59e0b"
+      stroke: "#d97706"
+      font-color: "#ffffff"
+      border-radius: 4
+      shadow: true
+    }
+  }
+
+  pv: {
+    style: {
+      fill: "#f59e0b"
+      stroke: "#d97706"
+      font-color: "#ffffff"
+      border-radius: 8
+    }
+  }
+
+  pvc: {
+    style: {
+      fill: "#fbbf24"
+      stroke: "#d97706"
+      font-color: "#78350f"
+      border-radius: 8
+    }
+  }
+
+  storage-class: {
+    style: {
+      fill: "#92400e"
+      stroke: "#78350f"
+      font-color: "#ffffff"
+      border-radius: 8
+    }
+  }
+
+  # ── Configuration ──
+  configmap: {
+    style: {
+      fill: "#a78bfa"
+      stroke: "#7c3aed"
+      font-color: "#ffffff"
+      border-radius: 4
+    }
+  }
+
+  secret: {
+    style: {
+      fill: "#ef4444"
+      stroke: "#b91c1c"
+      font-color: "#ffffff"
+      border-radius: 4
+    }
+  }
+
+  # ── RBAC ──
+  role: {
+    style: {
+      fill: "#06b6d4"
+      stroke: "#0891b2"
+      font-color: "#ffffff"
+      border-radius: 8
+    }
+  }
+
+  rolebinding: {
+    style: {
+      fill: "#22d3ee"
+      stroke: "#06b6d4"
+      font-color: "#0e7490"
+      border-radius: 8
+    }
+  }
+
+  user: {
+    style: {
+      fill: "#64748b"
+      stroke: "#475569"
+      font-color: "#ffffff"
+      border-radius: 20
+    }
+  }
+
+  # ── Namespace ──
+  namespace: {
+    style: {
+      fill: "#f0f9ff"
+      stroke: "#326ce5"
+      stroke-dash: 5
+      border-radius: 12
+    }
+  }
+
+  # ── External / Client ──
+  client: {
+    style: {
+      fill: "#64748b"
+      stroke: "#334155"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  cloud: {
+    style: {
+      fill: "#e2e8f0"
+      stroke: "#94a3b8"
+      border-radius: 16
+      shadow: true
+    }
+  }
+
+  # ── Status / Lifecycle ──
+  pending: {
+    style: {
+      fill: "#fef3c7"
+      stroke: "#f59e0b"
+      font-color: "#92400e"
+      border-radius: 8
+    }
+  }
+
+  running: {
+    style: {
+      fill: "#d1fae5"
+      stroke: "#10b981"
+      font-color: "#065f46"
+      border-radius: 8
+    }
+  }
+
+  succeeded: {
+    style: {
+      fill: "#a7f3d0"
+      stroke: "#059669"
+      font-color: "#064e3b"
+      border-radius: 8
+    }
+  }
+
+  failed: {
+    style: {
+      fill: "#fee2e2"
+      stroke: "#ef4444"
+      font-color: "#991b1b"
+      border-radius: 8
+    }
+  }
+
+  # ── Tool Comparison ──
+  tool-recommended: {
+    style: {
+      fill: "#dcfce7"
+      stroke: "#16a34a"
+      font-color: "#166534"
+      border-radius: 8
+      shadow: true
+      bold: true
+    }
+  }
+
+  tool-alternative: {
+    style: {
+      fill: "#f0f9ff"
+      stroke: "#3b82f6"
+      font-color: "#1e40af"
+      border-radius: 8
+    }
+  }
+
+  tool-other: {
+    style: {
+      fill: "#f8fafc"
+      stroke: "#94a3b8"
+      font-color: "#475569"
+      border-radius: 8
+    }
+  }
+
+  # ── Arrows ──
+  arrow-primary: {
+    style: {
+      stroke: "#326ce5"
+      stroke-width: 2
+    }
+  }
+
+  arrow-data: {
+    style: {
+      stroke: "#10b981"
+      stroke-width: 2
+      stroke-dash: 3
+    }
+  }
+
+  arrow-control: {
+    style: {
+      stroke: "#f97316"
+      stroke-width: 2
+    }
+  }
+}

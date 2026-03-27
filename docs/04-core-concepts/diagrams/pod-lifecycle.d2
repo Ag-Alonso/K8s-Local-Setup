@@ -1,0 +1,193 @@
+# Pod Lifecycle
+# Render: d2 --layout tala --theme 0 --dark-theme 200 pod-lifecycle.d2 pod-lifecycle.svg
+
+direction: right
+
+title: Pod Lifecycle {
+  near: top-center
+  style: {
+    font-size: 28
+    bold: true
+    font-color: "#1e293b"
+  }
+}
+
+# ── States ──
+
+created: Created {
+  shape: oval
+  style: {
+    fill: "#e2e8f0"
+    stroke: "#94a3b8"
+    font-color: "#334155"
+    border-radius: 20
+  }
+}
+
+pending: Pending {
+  style: {
+    fill: "#fef3c7"
+    stroke: "#f59e0b"
+    font-color: "#92400e"
+    border-radius: 8
+  }
+
+  scheduling: Scheduling {
+    style: {
+      fill: "#fef9c3"
+      stroke: "#eab308"
+      font-color: "#854d0e"
+      border-radius: 4
+      font-size: 14
+    }
+  }
+
+  image-pull: Image Pull {
+    style: {
+      fill: "#fef9c3"
+      stroke: "#eab308"
+      font-color: "#854d0e"
+      border-radius: 4
+      font-size: 14
+    }
+  }
+
+  scheduling -> image-pull
+}
+
+running: Running {
+  style: {
+    fill: "#d1fae5"
+    stroke: "#10b981"
+    font-color: "#065f46"
+    border-radius: 8
+    shadow: true
+  }
+
+  containers-active: Containers Active {
+    style: {
+      fill: "#a7f3d0"
+      stroke: "#059669"
+      font-color: "#064e3b"
+      border-radius: 4
+      font-size: 14
+    }
+  }
+
+  readiness-checks: Readiness Checks {
+    style: {
+      fill: "#a7f3d0"
+      stroke: "#059669"
+      font-color: "#064e3b"
+      border-radius: 4
+      font-size: 14
+    }
+  }
+
+  containers-active -> readiness-checks
+}
+
+succeeded: Succeeded {
+  style: {
+    fill: "#a7f3d0"
+    stroke: "#059669"
+    font-color: "#064e3b"
+    border-radius: 8
+    shadow: true
+  }
+
+  note: All containers\nexit code 0 {
+    style: {
+      fill: "#ecfdf5"
+      stroke: "#059669"
+      font-color: "#064e3b"
+      border-radius: 4
+      font-size: 13
+    }
+  }
+}
+
+failed: Failed {
+  style: {
+    fill: "#fee2e2"
+    stroke: "#ef4444"
+    font-color: "#991b1b"
+    border-radius: 8
+    shadow: true
+  }
+
+  note: Any container\nnon-zero exit {
+    style: {
+      fill: "#fef2f2"
+      stroke: "#ef4444"
+      font-color: "#991b1b"
+      border-radius: 4
+      font-size: 13
+    }
+  }
+}
+
+crash-loop: CrashLoopBackOff {
+  style: {
+    fill: "#fecaca"
+    stroke: "#dc2626"
+    font-color: "#991b1b"
+    border-radius: 8
+    bold: true
+  }
+
+  note: Exponential backoff\n10s, 20s, 40s... 5m max {
+    style: {
+      fill: "#fef2f2"
+      stroke: "#dc2626"
+      font-color: "#991b1b"
+      border-radius: 4
+      font-size: 12
+    }
+  }
+}
+
+# ── Transitions ──
+
+created -> pending: submit to API {
+  style: {
+    stroke: "#326ce5"
+    stroke-width: 2
+  }
+}
+
+pending -> running: scheduled & started {
+  style: {
+    stroke: "#10b981"
+    stroke-width: 2
+  }
+}
+
+running -> succeeded: completed (exit 0) {
+  style: {
+    stroke: "#059669"
+    stroke-width: 2
+  }
+}
+
+running -> failed: error (exit != 0) {
+  style: {
+    stroke: "#ef4444"
+    stroke-width: 2
+  }
+}
+
+running -> crash-loop: container crashes {
+  style: {
+    stroke: "#dc2626"
+    stroke-width: 2
+  }
+}
+
+crash-loop -> pending: restart with backoff {
+  style: {
+    stroke: "#f59e0b"
+    stroke-width: 2
+    stroke-dash: 5
+  }
+}

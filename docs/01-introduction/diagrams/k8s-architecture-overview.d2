@@ -1,0 +1,277 @@
+# Kubernetes Architecture Overview
+# Render: d2 --layout tala --theme 0 --dark-theme 200 k8s-architecture-overview.d2 k8s-architecture-overview.svg
+
+direction: right
+
+title: Kubernetes Architecture Overview {
+  near: top-center
+  style: {
+    font-size: 28
+    bold: true
+    font-color: "#1e293b"
+  }
+}
+
+# ── External Access ──
+
+kubectl: kubectl {
+  shape: rectangle
+  style: {
+    fill: "#64748b"
+    stroke: "#334155"
+    font-color: "#ffffff"
+    border-radius: 20
+    shadow: true
+  }
+}
+
+cloud-lb: Cloud / LoadBalancer {
+  shape: cloud
+  style: {
+    fill: "#e2e8f0"
+    stroke: "#94a3b8"
+    border-radius: 16
+    shadow: true
+  }
+}
+
+# ── Control Plane ──
+
+control-plane: Control Plane {
+  style: {
+    fill: "#eff6ff"
+    stroke: "#326ce5"
+    border-radius: 12
+    shadow: true
+    font-color: "#1e40af"
+    bold: true
+  }
+
+  api-server: API Server {
+    style: {
+      fill: "#326ce5"
+      stroke: "#1a4baa"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+      bold: true
+    }
+  }
+
+  etcd: etcd {
+    shape: cylinder
+    style: {
+      fill: "#419eda"
+      stroke: "#2b7ab5"
+      font-color: "#ffffff"
+      shadow: true
+    }
+  }
+
+  scheduler: Scheduler {
+    style: {
+      fill: "#326ce5"
+      stroke: "#1a4baa"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+    }
+  }
+
+  controller-mgr: Controller Manager {
+    style: {
+      fill: "#326ce5"
+      stroke: "#1a4baa"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+    }
+  }
+
+  # Internal control plane connections
+  api-server <-> etcd: state store {
+    style: {
+      stroke: "#10b981"
+      stroke-width: 2
+      stroke-dash: 3
+    }
+  }
+  scheduler -> api-server: watch & bind {
+    style: {
+      stroke: "#f97316"
+      stroke-width: 2
+    }
+  }
+  controller-mgr -> api-server: reconcile {
+    style: {
+      stroke: "#f97316"
+      stroke-width: 2
+    }
+  }
+}
+
+# ── Worker Node 1 ──
+
+worker-1: Worker Node 1 {
+  style: {
+    fill: "#e8f0fe"
+    stroke: "#326ce5"
+    border-radius: 8
+    shadow: true
+  }
+
+  kubelet-1: kubelet {
+    style: {
+      fill: "#4a90d9"
+      stroke: "#326ce5"
+      font-color: "#ffffff"
+      border-radius: 6
+    }
+  }
+
+  kube-proxy-1: kube-proxy {
+    style: {
+      fill: "#4a90d9"
+      stroke: "#326ce5"
+      font-color: "#ffffff"
+      border-radius: 6
+    }
+  }
+
+  runtime-1: Container Runtime {
+    style: {
+      fill: "#0db7ed"
+      stroke: "#0991c4"
+      font-color: "#ffffff"
+      border-radius: 4
+    }
+  }
+
+  pod-1a: Pod A {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  pod-1b: Pod B {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  kubelet-1 -> runtime-1: manages {
+    style.stroke: "#326ce5"
+  }
+  runtime-1 -> pod-1a
+  runtime-1 -> pod-1b
+}
+
+# ── Worker Node 2 ──
+
+worker-2: Worker Node 2 {
+  style: {
+    fill: "#e8f0fe"
+    stroke: "#326ce5"
+    border-radius: 8
+    shadow: true
+  }
+
+  kubelet-2: kubelet {
+    style: {
+      fill: "#4a90d9"
+      stroke: "#326ce5"
+      font-color: "#ffffff"
+      border-radius: 6
+    }
+  }
+
+  kube-proxy-2: kube-proxy {
+    style: {
+      fill: "#4a90d9"
+      stroke: "#326ce5"
+      font-color: "#ffffff"
+      border-radius: 6
+    }
+  }
+
+  runtime-2: Container Runtime {
+    style: {
+      fill: "#0db7ed"
+      stroke: "#0991c4"
+      font-color: "#ffffff"
+      border-radius: 4
+    }
+  }
+
+  pod-2a: Pod C {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  pod-2b: Pod D {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  kubelet-2 -> runtime-2: manages {
+    style.stroke: "#326ce5"
+  }
+  runtime-2 -> pod-2a
+  runtime-2 -> pod-2b
+}
+
+# ── Cross-component Connections ──
+
+kubectl -> control-plane.api-server: REST API {
+  style: {
+    stroke: "#326ce5"
+    stroke-width: 3
+    bold: true
+  }
+}
+
+control-plane.api-server -> worker-1.kubelet-1: instructions {
+  style: {
+    stroke: "#326ce5"
+    stroke-width: 2
+  }
+}
+
+control-plane.api-server -> worker-2.kubelet-2: instructions {
+  style: {
+    stroke: "#326ce5"
+    stroke-width: 2
+  }
+}
+
+cloud-lb -> worker-1: traffic {
+  style: {
+    stroke: "#10b981"
+    stroke-width: 2
+  }
+}
+
+cloud-lb -> worker-2: traffic {
+  style: {
+    stroke: "#10b981"
+    stroke-width: 2
+  }
+}

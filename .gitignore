@@ -1,0 +1,28 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# D2 rendered output
+docs/**/diagrams/*.svg
+docs/**/diagrams/*.png
+!docs/diagrams/_shared/
+
+# Temporary files
+*.tmp
+*.bak
+
+# Kind cluster config (generated)
+kind-config-*.yaml
+
+# Kubeconfig (generated)
+kubeconfig-*
+
+# Maestro orchestration
+.maestro-infinity/

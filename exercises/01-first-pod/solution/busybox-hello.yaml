@@ -1,0 +1,21 @@
+# Challenge 1: Pod that prints a message and exits
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-k8s
+  labels:
+    app: hello
+    exercise: "01"
+spec:
+  restartPolicy: Never
+  containers:
+    - name: hello
+      image: busybox:1.36
+      command: ["echo", "Hello, Kubernetes!"]
+      resources:
+        requests:
+          cpu: 50m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi

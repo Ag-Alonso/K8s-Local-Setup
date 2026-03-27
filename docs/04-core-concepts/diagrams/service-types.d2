@@ -1,0 +1,263 @@
+# Kubernetes Service Types
+# Render: d2 --layout tala --theme 0 --dark-theme 200 service-types.d2 service-types.svg
+
+direction: down
+
+title: Kubernetes Service Types {
+  near: top-center
+  style: {
+    font-size: 28
+    bold: true
+    font-color: "#1e293b"
+  }
+}
+
+# ── ClusterIP (Internal Only) ──
+
+clusterip: ClusterIP (Default) {
+  style: {
+    fill: "#f0f9ff"
+    stroke: "#326ce5"
+    stroke-dash: 5
+    border-radius: 12
+    bold: true
+  }
+
+  desc: Internal traffic only {
+    style: {
+      fill: "#ffffff"
+      stroke: "#cbd5e1"
+      font-color: "#64748b"
+      border-radius: 4
+      font-size: 13
+    }
+  }
+
+  pod-a: Pod A {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  svc: Service\n10.96.0.10:80 {
+    style: {
+      fill: "#10b981"
+      stroke: "#059669"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+    }
+  }
+
+  pod-b1: Pod B {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  pod-b2: Pod B {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  pod-a -> svc: cluster DNS {
+    style.stroke: "#326ce5"
+    style.stroke-width: 2
+  }
+  svc -> pod-b1 {
+    style.stroke: "#10b981"
+    style.stroke-width: 2
+  }
+  svc -> pod-b2 {
+    style.stroke: "#10b981"
+    style.stroke-width: 2
+  }
+}
+
+# ── NodePort (External via Node) ──
+
+nodeport: NodePort {
+  style: {
+    fill: "#f0f9ff"
+    stroke: "#326ce5"
+    stroke-dash: 5
+    border-radius: 12
+    bold: true
+  }
+
+  desc: External via node IP + port {
+    style: {
+      fill: "#ffffff"
+      stroke: "#cbd5e1"
+      font-color: "#64748b"
+      border-radius: 4
+      font-size: 13
+    }
+  }
+
+  client: Client {
+    shape: person
+    style: {
+      fill: "#64748b"
+      stroke: "#334155"
+      font-color: "#ffffff"
+    }
+  }
+
+  node: Node\n<nodeIP>:30080 {
+    style: {
+      fill: "#e8f0fe"
+      stroke: "#326ce5"
+      border-radius: 8
+      shadow: true
+    }
+  }
+
+  svc: Service\n:80 {
+    style: {
+      fill: "#10b981"
+      stroke: "#059669"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+    }
+  }
+
+  pod-1: Pod {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  pod-2: Pod {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  client -> node: nodeIP:30080 {
+    style.stroke: "#64748b"
+    style.stroke-width: 2
+  }
+  node -> svc: forwards {
+    style.stroke: "#326ce5"
+    style.stroke-width: 2
+  }
+  svc -> pod-1 {
+    style.stroke: "#10b981"
+    style.stroke-width: 2
+  }
+  svc -> pod-2 {
+    style.stroke: "#10b981"
+    style.stroke-width: 2
+  }
+}
+
+# ── LoadBalancer (External via LB) ──
+
+loadbalancer: LoadBalancer {
+  style: {
+    fill: "#f0f9ff"
+    stroke: "#326ce5"
+    stroke-dash: 5
+    border-radius: 12
+    bold: true
+  }
+
+  desc: External via cloud load balancer {
+    style: {
+      fill: "#ffffff"
+      stroke: "#cbd5e1"
+      font-color: "#64748b"
+      border-radius: 4
+      font-size: 13
+    }
+  }
+
+  client: Client {
+    shape: person
+    style: {
+      fill: "#64748b"
+      stroke: "#334155"
+      font-color: "#ffffff"
+    }
+  }
+
+  lb: Load Balancer\nPublic IP:80 {
+    shape: cloud
+    style: {
+      fill: "#e2e8f0"
+      stroke: "#94a3b8"
+      border-radius: 16
+      shadow: true
+    }
+  }
+
+  svc: Service\n:80 {
+    style: {
+      fill: "#10b981"
+      stroke: "#059669"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+    }
+  }
+
+  pod-1: Pod {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  pod-2: Pod {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  client -> lb: public IP:80 {
+    style.stroke: "#64748b"
+    style.stroke-width: 2
+  }
+  lb -> svc: forwards {
+    style.stroke: "#326ce5"
+    style.stroke-width: 2
+  }
+  svc -> pod-1 {
+    style.stroke: "#10b981"
+    style.stroke-width: 2
+  }
+  svc -> pod-2 {
+    style.stroke: "#10b981"
+    style.stroke-width: 2
+  }
+}

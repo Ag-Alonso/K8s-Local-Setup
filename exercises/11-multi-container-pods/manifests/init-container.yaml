@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: init-demo
+  labels:
+    app: init-demo
+    exercise: "11"
+spec:
+  initContainers:
+    - name: init-data
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - |
+          echo "Init container: preparing data..."
+          echo "<h1>Data prepared by init container at $(date)</h1>" > /work/index.html
+          echo "Init container: done!"
+      volumeMounts:
+        - name: workdir
+          mountPath: /work
+      resources:
+        requests:
+          cpu: 50m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi
+  containers:
+    - name: web
+      image: nginx:1.27
+      ports:
+        - containerPort: 80
+      volumeMounts:
+        - name: workdir
+          mountPath: /usr/share/nginx/html
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 250m
+          memory: 256Mi
+  volumes:
+    - name: workdir
+      emptyDir: {}

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: development
+  labels:
+    app: web
+    exercise: "07"
+spec:
+  selector:
+    app: web
+  ports:
+    - port: 80
+      targetPort: 80

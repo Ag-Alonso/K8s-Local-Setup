@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-debug
+  labels:
+    app: web-debug
+    exercise: "10"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web-debug
+  template:
+    metadata:
+      labels:
+        app: web-debug
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.27
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-debug
+  labels:
+    app: web-debug
+    exercise: "10"
+spec:
+  selector:
+    app: web-debug
+  ports:
+    - port: 80
+      targetPort: 80

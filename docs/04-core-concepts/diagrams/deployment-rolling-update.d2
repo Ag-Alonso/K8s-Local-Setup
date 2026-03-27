@@ -1,0 +1,310 @@
+# Deployment Rolling Update
+# Render: d2 --layout tala --theme 0 --dark-theme 200 deployment-rolling-update.d2 deployment-rolling-update.svg
+
+direction: down
+
+title: Deployment Rolling Update {
+  near: top-center
+  style: {
+    font-size: 28
+    bold: true
+    font-color: "#1e293b"
+  }
+}
+
+# ── Strategy Info ──
+
+strategy: Strategy: maxSurge=1, maxUnavailable=0 {
+  near: top-center
+  style: {
+    fill: "#eff6ff"
+    stroke: "#326ce5"
+    font-color: "#1e40af"
+    border-radius: 8
+    font-size: 14
+  }
+}
+
+# ── Deployment Controller ──
+
+deployment: Deployment (nginx) {
+  style: {
+    fill: "#326ce5"
+    stroke: "#1a4baa"
+    font-color: "#ffffff"
+    border-radius: 8
+    shadow: true
+    bold: true
+  }
+}
+
+# ── Phase 1: Initial State ──
+
+phase-1: "Phase 1: Initial State" {
+  style: {
+    fill: "#f8fafc"
+    stroke: "#cbd5e1"
+    border-radius: 12
+    bold: true
+  }
+
+  old-rs: ReplicaSet (v1) {
+    style: {
+      fill: "#6b9ded"
+      stroke: "#326ce5"
+      font-color: "#ffffff"
+      border-radius: 8
+    }
+  }
+
+  p1: Pod v1 {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+    }
+  }
+  p2: Pod v1 {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+    }
+  }
+  p3: Pod v1 {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+    }
+  }
+
+  new-rs: ReplicaSet (v2)\n0 replicas {
+    style: {
+      fill: "#bfdbfe"
+      stroke: "#326ce5"
+      font-color: "#1e40af"
+      border-radius: 8
+      stroke-dash: 3
+    }
+  }
+
+  old-rs -> p1
+  old-rs -> p2
+  old-rs -> p3
+}
+
+# ── Phase 2: Scale Up New ──
+
+phase-2: "Phase 2: Scale Up New" {
+  style: {
+    fill: "#f8fafc"
+    stroke: "#cbd5e1"
+    border-radius: 12
+    bold: true
+  }
+
+  old-rs: ReplicaSet (v1) {
+    style: {
+      fill: "#6b9ded"
+      stroke: "#326ce5"
+      font-color: "#ffffff"
+      border-radius: 8
+    }
+  }
+
+  p1: Pod v1 {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+    }
+  }
+  p2: Pod v1 {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+    }
+  }
+
+  new-rs: ReplicaSet (v2) {
+    style: {
+      fill: "#3b82f6"
+      stroke: "#1d4ed8"
+      font-color: "#ffffff"
+      border-radius: 8
+    }
+  }
+
+  np1: Pod v2 {
+    style: {
+      fill: "#22c55e"
+      stroke: "#16a34a"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  old-rs -> p1
+  old-rs -> p2
+  new-rs -> np1
+}
+
+# ── Phase 3: Continue Rolling ──
+
+phase-3: "Phase 3: Continue Rolling" {
+  style: {
+    fill: "#f8fafc"
+    stroke: "#cbd5e1"
+    border-radius: 12
+    bold: true
+  }
+
+  old-rs: ReplicaSet (v1) {
+    style: {
+      fill: "#6b9ded"
+      stroke: "#326ce5"
+      font-color: "#ffffff"
+      border-radius: 8
+    }
+  }
+
+  p1: Pod v1 {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+    }
+  }
+
+  new-rs: ReplicaSet (v2) {
+    style: {
+      fill: "#3b82f6"
+      stroke: "#1d4ed8"
+      font-color: "#ffffff"
+      border-radius: 8
+    }
+  }
+
+  np1: Pod v2 {
+    style: {
+      fill: "#22c55e"
+      stroke: "#16a34a"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  np2: Pod v2 {
+    style: {
+      fill: "#22c55e"
+      stroke: "#16a34a"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  old-rs -> p1
+  new-rs -> np1
+  new-rs -> np2
+}
+
+# ── Phase 4: Complete ──
+
+phase-4: "Phase 4: Complete" {
+  style: {
+    fill: "#f0fdf4"
+    stroke: "#16a34a"
+    border-radius: 12
+    bold: true
+  }
+
+  old-rs: ReplicaSet (v1)\n0 replicas {
+    style: {
+      fill: "#e2e8f0"
+      stroke: "#94a3b8"
+      font-color: "#64748b"
+      border-radius: 8
+      stroke-dash: 3
+    }
+  }
+
+  new-rs: ReplicaSet (v2) {
+    style: {
+      fill: "#3b82f6"
+      stroke: "#1d4ed8"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+    }
+  }
+
+  np1: Pod v2 {
+    style: {
+      fill: "#22c55e"
+      stroke: "#16a34a"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  np2: Pod v2 {
+    style: {
+      fill: "#22c55e"
+      stroke: "#16a34a"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  np3: Pod v2 {
+    style: {
+      fill: "#22c55e"
+      stroke: "#16a34a"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+    }
+  }
+
+  new-rs -> np1
+  new-rs -> np2
+  new-rs -> np3
+}
+
+# ── Flow between phases ──
+
+deployment -> phase-1: manages {
+  style.stroke: "#326ce5"
+  style.stroke-width: 2
+}
+
+phase-1 -> phase-2: update triggered {
+  style.stroke: "#f59e0b"
+  style.stroke-width: 2
+  style.stroke-dash: 5
+}
+
+phase-2 -> phase-3: rolling {
+  style.stroke: "#f59e0b"
+  style.stroke-width: 2
+  style.stroke-dash: 5
+}
+
+phase-3 -> phase-4: done {
+  style.stroke: "#16a34a"
+  style.stroke-width: 2
+  style.stroke-dash: 5
+}

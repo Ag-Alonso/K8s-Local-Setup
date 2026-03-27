@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: adapter-demo
+  labels:
+    app: adapter-demo
+    exercise: "11"
+spec:
+  containers:
+    - name: app
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - |
+          while true; do
+            echo "requests=$(( RANDOM % 100 )) errors=$(( RANDOM % 10 )) latency_ms=$(( RANDOM % 500 ))" > /metrics/raw.txt
+            sleep 10
+          done
+      volumeMounts:
+        - name: metrics
+          mountPath: /metrics
+      resources:
+        requests:
+          cpu: 50m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi
+    - name: adapter
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - |
+          while true; do
+            if [ -f /metrics/raw.txt ]; then
+              eval $(cat /metrics/raw.txt)
+              cat > /metrics/prometheus.txt << PROM
+          # HELP app_requests_total Total number of requests
+          # TYPE app_requests_total counter
+          app_requests_total ${requests}
+          # HELP app_errors_total Total number of errors
+          # TYPE app_errors_total counter
+          app_errors_total ${errors}
+          # HELP app_latency_ms Request latency in milliseconds
+          # TYPE app_latency_ms gauge
+          app_latency_ms ${latency_ms}
+          PROM
+            fi
+            sleep 10
+          done
+      volumeMounts:
+        - name: metrics
+          mountPath: /metrics
+      resources:
+        requests:
+          cpu: 50m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi
+  volumes:
+    - name: metrics
+      emptyDir: {}

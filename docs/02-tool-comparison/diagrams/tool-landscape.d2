@@ -1,0 +1,172 @@
+# Local Kubernetes Tool Landscape
+# Render: d2 --layout tala --theme 0 --dark-theme 200 tool-landscape.d2 tool-landscape.svg
+
+direction: right
+
+title: Local Kubernetes Tool Landscape {
+  near: top-center
+  style: {
+    font-size: 28
+    bold: true
+    font-color: "#1e293b"
+  }
+}
+
+# ── Container-Based Tools ──
+
+container-based: Container-Based {
+  style: {
+    fill: "#f0fdf4"
+    stroke: "#16a34a"
+    border-radius: 12
+    bold: true
+    font-color: "#166534"
+  }
+
+  kind: kind\nUpstream K8s\nMulti-node support {
+    style: {
+      fill: "#dcfce7"
+      stroke: "#16a34a"
+      font-color: "#166534"
+      border-radius: 8
+      shadow: true
+      bold: true
+      stroke-width: 3
+    }
+  }
+
+  k3d: k3d\nLightweight (k3s)\nFast startup {
+    style: {
+      fill: "#f0f9ff"
+      stroke: "#3b82f6"
+      font-color: "#1e40af"
+      border-radius: 8
+    }
+  }
+
+  minikube: minikube\nFeature-rich\nMultiple drivers {
+    style: {
+      fill: "#f0f9ff"
+      stroke: "#3b82f6"
+      font-color: "#1e40af"
+      border-radius: 8
+    }
+  }
+}
+
+# ── Desktop Apps ──
+
+desktop: Desktop Apps {
+  style: {
+    fill: "#f0f9ff"
+    stroke: "#3b82f6"
+    border-radius: 12
+    bold: true
+    font-color: "#1e40af"
+  }
+
+  docker-desktop: Docker Desktop\nGUI included\nBuilt-in K8s {
+    style: {
+      fill: "#f0f9ff"
+      stroke: "#3b82f6"
+      font-color: "#1e40af"
+      border-radius: 8
+    }
+  }
+
+  rancher-desktop: Rancher Desktop\nOpen source\ncontainerd/dockerd {
+    style: {
+      fill: "#f0f9ff"
+      stroke: "#3b82f6"
+      font-color: "#1e40af"
+      border-radius: 8
+    }
+  }
+
+  orbstack: OrbStack\nmacOS only\nFast & lightweight {
+    style: {
+      fill: "#f0f9ff"
+      stroke: "#3b82f6"
+      font-color: "#1e40af"
+      border-radius: 8
+    }
+  }
+}
+
+# ── System-Level ──
+
+system-level: System-Level {
+  style: {
+    fill: "#f8fafc"
+    stroke: "#94a3b8"
+    border-radius: 12
+    bold: true
+    font-color: "#475569"
+  }
+
+  microk8s: MicroK8s\nSnap-based\nCanonical {
+    style: {
+      fill: "#f8fafc"
+      stroke: "#94a3b8"
+      font-color: "#475569"
+      border-radius: 8
+    }
+  }
+
+  colima: Colima\nmacOS/Linux\nMinimal VM {
+    style: {
+      fill: "#f8fafc"
+      stroke: "#94a3b8"
+      font-color: "#475569"
+      border-radius: 8
+    }
+  }
+}
+
+# ── Recommendation Callout ──
+
+recommendation: Recommended for Learning {
+  style: {
+    fill: "#16a34a"
+    stroke: "#15803d"
+    font-color: "#ffffff"
+    border-radius: 20
+    shadow: true
+    bold: true
+    font-size: 16
+  }
+}
+
+recommendation -> container-based.kind {
+  style: {
+    stroke: "#16a34a"
+    stroke-width: 3
+    animated: true
+  }
+}
+
+# ── Comparison Notes ──
+
+why-kind: |md
+  **Why kind?**
+  - Uses upstream Kubernetes (same as production)
+  - Multi-node clusters on a laptop
+  - Fast creation/teardown
+  - CI/CD friendly
+  - Active CNCF community
+| {
+  style: {
+    fill: "#f0fdf4"
+    stroke: "#16a34a"
+    font-color: "#166534"
+    border-radius: 8
+    font-size: 13
+  }
+}
+
+container-based.kind -> why-kind {
+  style: {
+    stroke: "#16a34a"
+    stroke-dash: 3
+  }
+}

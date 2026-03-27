@@ -1,0 +1,200 @@
+# Kubernetes Storage Architecture
+# Render: d2 --layout tala --theme 0 --dark-theme 200 storage-architecture.d2 storage-architecture.svg
+
+direction: down
+
+title: Kubernetes Storage Architecture {
+  near: top-center
+  style: {
+    font-size: 28
+    bold: true
+    font-color: "#1e293b"
+  }
+}
+
+# ── Cluster Level ──
+
+cluster-scope: Cluster-Scoped Resources {
+  style: {
+    fill: "#f8fafc"
+    stroke: "#94a3b8"
+    border-radius: 12
+    bold: true
+  }
+
+  sc: StorageClass {
+    style: {
+      fill: "#92400e"
+      stroke: "#78350f"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+      bold: true
+    }
+  }
+
+  sc-details: |md
+    **provisioner:** kubernetes.io/aws-ebs
+    **reclaimPolicy:** Delete
+    **volumeBindingMode:** WaitForFirstConsumer
+  | {
+    style: {
+      fill: "#fef3c7"
+      stroke: "#d97706"
+      border-radius: 4
+      font-size: 13
+    }
+  }
+
+  pv: PersistentVolume (PV) {
+    style: {
+      fill: "#f59e0b"
+      stroke: "#d97706"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+      bold: true
+    }
+  }
+
+  pv-details: |md
+    **capacity:** 10Gi
+    **accessModes:** ReadWriteOnce
+    **status:** Bound
+  | {
+    style: {
+      fill: "#fef9c3"
+      stroke: "#eab308"
+      border-radius: 4
+      font-size: 13
+    }
+  }
+
+  sc -> pv: dynamically provisions {
+    style: {
+      stroke: "#92400e"
+      stroke-width: 2
+    }
+  }
+}
+
+# ── Namespace Level ──
+
+namespace: Namespace (my-app) {
+  style: {
+    fill: "#f0f9ff"
+    stroke: "#326ce5"
+    stroke-dash: 5
+    border-radius: 12
+    bold: true
+  }
+
+  pvc: PersistentVolumeClaim (PVC) {
+    style: {
+      fill: "#fbbf24"
+      stroke: "#d97706"
+      font-color: "#78350f"
+      border-radius: 8
+      shadow: true
+      bold: true
+    }
+  }
+
+  pvc-details: |md
+    **request:** 10Gi
+    **storageClassName:** gp3
+    **accessModes:** ReadWriteOnce
+  | {
+    style: {
+      fill: "#fef9c3"
+      stroke: "#eab308"
+      border-radius: 4
+      font-size: 13
+    }
+  }
+
+  pod: Pod (my-app) {
+    style: {
+      fill: "#f97316"
+      stroke: "#c2410c"
+      font-color: "#ffffff"
+      border-radius: 20
+      shadow: true
+      bold: true
+    }
+  }
+
+  container: Container {
+    style: {
+      fill: "#0db7ed"
+      stroke: "#0991c4"
+      font-color: "#ffffff"
+      border-radius: 4
+    }
+  }
+
+  volume-mount: volumeMount\n/data {
+    style: {
+      fill: "#fef3c7"
+      stroke: "#f59e0b"
+      font-color: "#92400e"
+      border-radius: 4
+      font-size: 14
+    }
+  }
+
+  pod -> container: runs
+  container -> volume-mount: reads/writes {
+    style: {
+      stroke: "#f59e0b"
+      stroke-width: 2
+    }
+  }
+  volume-mount -> pvc: references {
+    style: {
+      stroke: "#d97706"
+      stroke-width: 2
+      stroke-dash: 3
+    }
+  }
+}
+
+# ── Cross-scope connections ──
+
+namespace.pvc -> cluster-scope.pv: binds to {
+  style: {
+    stroke: "#f59e0b"
+    stroke-width: 3
+    bold: true
+  }
+}
+
+# ── Physical Storage ──
+
+physical: Physical Storage {
+  style: {
+    fill: "#e2e8f0"
+    stroke: "#94a3b8"
+    border-radius: 16
+    shadow: true
+    bold: true
+  }
+
+  disk: Cloud Disk\n(EBS, PD, Azure Disk) {
+    shape: cylinder
+    style: {
+      fill: "#64748b"
+      stroke: "#475569"
+      font-color: "#ffffff"
+      shadow: true
+    }
+  }
+}
+
+cluster-scope.pv -> physical.disk: backed by {
+  style: {
+    stroke: "#64748b"
+    stroke-width: 2
+    stroke-dash: 3
+  }
+}

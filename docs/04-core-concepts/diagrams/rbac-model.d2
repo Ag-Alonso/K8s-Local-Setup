@@ -1,0 +1,267 @@
+# Kubernetes RBAC Model
+# Render: d2 --layout tala --theme 0 --dark-theme 200 rbac-model.d2 rbac-model.svg
+
+direction: right
+
+title: Kubernetes RBAC Model {
+  near: top-center
+  style: {
+    font-size: 28
+    bold: true
+    font-color: "#1e293b"
+  }
+}
+
+# ── Subjects ──
+
+subjects: Subjects {
+  style: {
+    fill: "#f8fafc"
+    stroke: "#94a3b8"
+    border-radius: 12
+    bold: true
+  }
+
+  user-dev: User: "dev" {
+    shape: person
+    style: {
+      fill: "#64748b"
+      stroke: "#475569"
+      font-color: "#ffffff"
+    }
+  }
+
+  sa: ServiceAccount:\n"monitoring" {
+    style: {
+      fill: "#64748b"
+      stroke: "#475569"
+      font-color: "#ffffff"
+      border-radius: 20
+    }
+  }
+
+  group: Group:\n"platform-team" {
+    style: {
+      fill: "#64748b"
+      stroke: "#475569"
+      font-color: "#ffffff"
+      border-radius: 20
+    }
+  }
+}
+
+# ── Namespace-Scoped RBAC ──
+
+ns-rbac: Namespace Scope (ns: "app") {
+  style: {
+    fill: "#f0f9ff"
+    stroke: "#326ce5"
+    stroke-dash: 5
+    border-radius: 12
+    bold: true
+  }
+
+  rolebinding: RoleBinding\n"dev-pod-reader" {
+    style: {
+      fill: "#22d3ee"
+      stroke: "#06b6d4"
+      font-color: "#0e7490"
+      border-radius: 8
+      shadow: true
+      bold: true
+    }
+  }
+
+  role: Role\n"pod-reader" {
+    style: {
+      fill: "#06b6d4"
+      stroke: "#0891b2"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+      bold: true
+    }
+  }
+
+  permissions: |md
+    **Rules:**
+    - resources: [pods, pods/log]
+    - verbs: [get, list, watch]
+  | {
+    style: {
+      fill: "#ecfeff"
+      stroke: "#06b6d4"
+      font-color: "#155e75"
+      border-radius: 4
+      font-size: 13
+    }
+  }
+
+  target: Target Resources\nin namespace "app" {
+    style: {
+      fill: "#e8f0fe"
+      stroke: "#326ce5"
+      border-radius: 8
+    }
+
+    pods: Pods {
+      style: {
+        fill: "#f97316"
+        stroke: "#c2410c"
+        font-color: "#ffffff"
+        border-radius: 20
+      }
+    }
+  }
+
+  rolebinding -> role: references {
+    style: {
+      stroke: "#06b6d4"
+      stroke-width: 2
+    }
+  }
+
+  role -> permissions {
+    style: {
+      stroke: "#06b6d4"
+      stroke-dash: 3
+    }
+  }
+
+  role -> target: grants access {
+    style: {
+      stroke: "#10b981"
+      stroke-width: 2
+    }
+  }
+}
+
+# ── Cluster-Scoped RBAC ──
+
+cluster-rbac: Cluster Scope {
+  style: {
+    fill: "#fefce8"
+    stroke: "#ca8a04"
+    border-radius: 12
+    bold: true
+  }
+
+  cluster-rolebinding: ClusterRoleBinding\n"platform-admin" {
+    style: {
+      fill: "#22d3ee"
+      stroke: "#06b6d4"
+      font-color: "#0e7490"
+      border-radius: 8
+      shadow: true
+      bold: true
+    }
+  }
+
+  cluster-role: ClusterRole\n"cluster-admin" {
+    style: {
+      fill: "#06b6d4"
+      stroke: "#0891b2"
+      font-color: "#ffffff"
+      border-radius: 8
+      shadow: true
+      bold: true
+    }
+  }
+
+  cluster-perms: |md
+    **Rules:**
+    - resources: [*]
+    - verbs: [*]
+    - (all namespaces)
+  | {
+    style: {
+      fill: "#ecfeff"
+      stroke: "#06b6d4"
+      font-color: "#155e75"
+      border-radius: 4
+      font-size: 13
+    }
+  }
+
+  cluster-rolebinding -> cluster-role: references {
+    style: {
+      stroke: "#06b6d4"
+      stroke-width: 2
+    }
+  }
+
+  cluster-role -> cluster-perms {
+    style: {
+      stroke: "#06b6d4"
+      stroke-dash: 3
+    }
+  }
+}
+
+# ── Connections from subjects ──
+
+subjects.user-dev -> ns-rbac.rolebinding: bound via {
+  style: {
+    stroke: "#326ce5"
+    stroke-width: 2
+    bold: true
+  }
+}
+
+subjects.sa -> ns-rbac.rolebinding: bound via {
+  style: {
+    stroke: "#326ce5"
+    stroke-width: 2
+  }
+}
+
+subjects.group -> cluster-rbac.cluster-rolebinding: bound via {
+  style: {
+    stroke: "#ca8a04"
+    stroke-width: 2
+    bold: true
+  }
+}
+
+# ── Legend ──
+
+legend: How RBAC Works {
+  style: {
+    fill: "#f1f5f9"
+    stroke: "#cbd5e1"
+    border-radius: 8
+    font-size: 14
+  }
+
+  step1: "1. Subject (who?)" {
+    style: {
+      fill: "#64748b"
+      stroke: "#475569"
+      font-color: "#ffffff"
+      border-radius: 4
+      font-size: 12
+    }
+  }
+
+  step2: "2. Binding (connects)" {
+    style: {
+      fill: "#22d3ee"
+      stroke: "#06b6d4"
+      font-color: "#0e7490"
+      border-radius: 4
+      font-size: 12
+    }
+  }
+
+  step3: "3. Role (what?)" {
+    style: {
+      fill: "#06b6d4"
+      stroke: "#0891b2"
+      font-color: "#ffffff"
+      border-radius: 4
+      font-size: 12
+    }
+  }
+
+  step1 -> step2 -> step3
+}

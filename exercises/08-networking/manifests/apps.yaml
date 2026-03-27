@@ -1,0 +1,91 @@
+# App 1 - Deployment and Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1
+  labels:
+    app: app1
+    exercise: "08"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app1
+  template:
+    metadata:
+      labels:
+        app: app1
+    spec:
+      containers:
+        - name: app
+          image: hashicorp/http-echo:1.0
+          args: ["-text=Hello from App 1!", "-listen=:80"]
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app1-svc
+  labels:
+    app: app1
+    exercise: "08"
+spec:
+  selector:
+    app: app1
+  ports:
+    - port: 80
+      targetPort: 80
+---
+# App 2 - Deployment and Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app2
+  labels:
+    app: app2
+    exercise: "08"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app2
+  template:
+    metadata:
+      labels:
+        app: app2
+    spec:
+      containers:
+        - name: app
+          image: hashicorp/http-echo:1.0
+          args: ["-text=Hello from App 2!", "-listen=:80"]
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app2-svc
+  labels:
+    app: app2
+    exercise: "08"
+spec:
+  selector:
+    app: app2
+  ports:
+    - port: 80
+      targetPort: 80
