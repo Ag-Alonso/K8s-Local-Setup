@@ -19,8 +19,13 @@ spec:
         - name: web
           image: hashicorp/http-echo:1.0
           args:
-            - "-text=Hello from $(HOSTNAME)"
+            - "-text=Hello from $(MY_POD_NAME)"
             - "-listen=:80"
+          env:
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           ports:
             - containerPort: 80
           resources:
